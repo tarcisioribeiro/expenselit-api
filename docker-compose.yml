@@ -8,8 +8,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_healthy
     volumes:
       - ./media:/app/media
       - ./logs:/app/logs
@@ -52,48 +50,9 @@ services:
     networks:
       - expenselit-network
 
-  redis:
-    image: redis:7-alpine
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-expenselit_redis}
-    volumes:
-      - redis_data:/data
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "redis-cli",
-          "--no-auth-warning",
-          "-a",
-          "${REDIS_PASSWORD:-expenselit_redis}",
-          "ping",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - expenselit-network
-
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "8801:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./media:/app/media:ro
-      - ./static:/app/static:ro
-    depends_on:
-      - app
-    restart: unless-stopped
-    networks:
-      - expenselit-network
 
 volumes:
   postgres_data:
-    driver: local
-  redis_data:
     driver: local
 
 networks:

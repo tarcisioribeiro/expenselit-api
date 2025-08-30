@@ -12,7 +12,7 @@ SECRET_KEY = (
     os.getenv('SECRET_KEY')
 )
 
-DEBUG = False
+DEBUG = True
 
 # Permitirá o acesso somente se o usuário estiver conectado via VPN.
 ALLOWED_HOSTS = ['*']
@@ -143,30 +143,15 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'app.pagination.StandardResultsSetPagination',
-    'PAGE_SIZE': 25,
 }
 
-# Caching Configuration (Redis)
+# Caching Configuration
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
     }
 }
-
-# Uncomment below when Redis is available
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         },
-#         'KEY_PREFIX': 'expenselit',
-#         'TIMEOUT': 300,  # 5 minutes default timeout
-#     }
-# }
 
 # Structured Logging Configuration
 LOGGING = {

@@ -11,14 +11,12 @@ from credit_cards.serializers import (
     CreditCardExpensesSerializer
 )
 from app.permissions import GlobalDefaultPermission
-from app.pagination import StandardResultsSetPagination
 
 
 class CreditCardCreateListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
     queryset = CreditCard.objects.select_related('associated_account').all()
     serializer_class = CreditCardSerializer
-    pagination_class = StandardResultsSetPagination
     ordering = ['name']
 
 
@@ -34,7 +32,6 @@ class CreditCardBillCreateListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
     queryset = CreditCardBill.objects.select_related('credit_card', 'credit_card__associated_account').all()
     serializer_class = CreditCardBillsSerializer
-    pagination_class = StandardResultsSetPagination
     ordering = ['-year', '-month', '-invoice_ending_date']
 
 
@@ -50,7 +47,6 @@ class CreditCardExpenseCreateListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
     queryset = CreditCardExpense.objects.select_related('card', 'card__associated_account').all()
     serializer_class = CreditCardExpensesSerializer
-    pagination_class = StandardResultsSetPagination
     ordering = ['-date', '-id']
 
 
