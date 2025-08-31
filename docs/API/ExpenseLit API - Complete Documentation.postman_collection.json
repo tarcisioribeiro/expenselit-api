@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "76e42ea6-31b6-4297-b1f9-b175c5f9a83f",
+		"_postman_id": "66b61959-9769-46ee-8f5e-2cbf2c3bb348",
 		"name": "ExpenseLit API - Complete Documentation",
 		"description": "API completa para gerenciamento de finanças pessoais.\n\n## Autenticação\nA API utiliza JWT (JSON Web Tokens) para autenticação. Obtenha um token através do endpoint `/api/v1/authentication/token/` e inclua-o no header Authorization como `Bearer {token}`.\n\n## Base URL\n{{API_HOST}}/api/v1/\n\n## Status Codes\n- 200: Sucesso\n- 201: Criado com sucesso\n- 400: Dados inválidos\n- 401: Não autenticado\n- 403: Sem permissão\n- 404: Não encontrado\n- 500: Erro interno do servidor",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -1174,26 +1174,6 @@
 			}
 		]
 	},
-	"variable": [
-		{
-			"key": "API_HOST",
-			"value": "http://localhost:8002",
-			"type": "string",
-			"description": "Base URL da API"
-		},
-		{
-			"key": "access_token",
-			"value": "",
-			"type": "string",
-			"description": "Token de acesso JWT"
-		},
-		{
-			"key": "refresh_token",
-			"value": "",
-			"type": "string",
-			"description": "Token de refresh JWT"
-		}
-	],
 	"event": [
 		{
 			"listen": "prerequest",
@@ -1229,6 +1209,26 @@
 					"// });"
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_HOST",
+			"value": "http://localhost:8002",
+			"type": "string",
+			"description": "Base URL da API"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string",
+			"description": "Token de acesso JWT"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string",
+			"description": "Token de refresh JWT"
 		}
 	]
 }

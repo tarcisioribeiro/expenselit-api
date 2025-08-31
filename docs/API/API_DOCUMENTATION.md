@@ -93,7 +93,25 @@ Authorization: Bearer {access_token}
 - **PUT** `/accounts/{id}/` - Atualiza conta
 - **DELETE** `/accounts/{id}/` - Exclui conta
 
-### Exemplo de Conta
+### Campos Completos da Conta
+
+**Campos obrigatórios:**
+- `name`: Nome da instituição (NUB, SIC, MPG, IFB, CEF)
+- `account_type`: Tipo da conta (CC, CS, FG, VA)
+- `is_active`: Se a conta está ativa (padrão: true)
+
+**Campos opcionais:**
+- `account_image`: Imagem/logo da conta
+- `account_number`: Número da conta (criptografado automaticamente)
+- `agency`: Código da agência
+- `bank_code`: Código do banco
+- `current_balance`: Saldo atual (padrão: 0.00)
+- `minimum_balance`: Saldo mínimo permitido (padrão: 0.00)
+- `opening_date`: Data de abertura da conta
+- `description`: Descrição ou observações
+- `owner`: ID do membro proprietário da conta
+
+### Exemplo de Conta (Completo)
 
 ```json
 {
@@ -101,9 +119,19 @@ Authorization: Bearer {access_token}
     "name": "NUB",
     "account_type": "CC",
     "account_image": "/media/accounts/nubank.png",
-    "is_active": true
+    "is_active": true,
+    "account_number": "****1234",
+    "agency": "0001",
+    "bank_code": "260",
+    "current_balance": "2500.50",
+    "minimum_balance": "0.00",
+    "opening_date": "2020-01-15",
+    "description": "Conta principal",
+    "owner": 1
 }
 ```
+
+**⚠️ Segurança:** O campo `account_number` é automaticamente criptografado ao ser salvo e retornado parcialmente mascarado.
 
 ## 💸 Despesas (Expenses)
 
@@ -150,7 +178,28 @@ Authorization: Bearer {access_token}
 - **PUT** `/expenses/{id}/` - Atualiza despesa
 - **DELETE** `/expenses/{id}/` - Exclui despesa
 
-### Exemplo de Despesa
+### Campos Completos da Despesa
+
+**Campos obrigatórios:**
+- `description`: Descrição da despesa
+- `value`: Valor da despesa
+- `date`: Data da despesa
+- `horary`: Horário da despesa
+- `category`: Categoria da despesa
+- `account`: ID da conta
+- `payed`: Se foi paga
+
+**Campos opcionais:**
+- `merchant`: Nome do estabelecimento
+- `location`: Local da compra
+- `payment_method`: Método de pagamento (cash, debit_card, credit_card, pix, transfer, check, other)
+- `receipt`: Arquivo do comprovante
+- `member`: ID do membro responsável
+- `notes`: Observações
+- `recurring`: Se é despesa recorrente (padrão: false)
+- `frequency`: Frequência se recorrente (daily, weekly, monthly, quarterly, semiannual, annual)
+
+### Exemplo de Despesa (Completo)
 
 ```json
 {
@@ -161,7 +210,15 @@ Authorization: Bearer {access_token}
     "horary": "19:30:00",
     "category": "supermarket",
     "account": 1,
-    "payed": true
+    "payed": true,
+    "merchant": "Extra Supermercados",
+    "location": "Shopping ABC",
+    "payment_method": "debit_card",
+    "receipt": "/media/expenses/receipts/receipt_123.pdf",
+    "member": 1,
+    "notes": "Compras do mês",
+    "recurring": false,
+    "frequency": null
 }
 ```
 
@@ -210,7 +267,29 @@ O campo `security_code` (CVV) é **automaticamente criptografado** antes de ser 
 - **PUT** `/credit-card-expenses/{id}/` - Atualiza despesa
 - **DELETE** `/credit-card-expenses/{id}/` - Exclui despesa
 
-### Exemplo de Cartão (Resposta)
+### Campos Completos do Cartão
+
+**Campos obrigatórios:**
+- `name`: Nome do cartão
+- `on_card_name`: Nome impresso no cartão
+- `flag`: Bandeira (MSC, VSA, ELO, EXP, HCD)
+- `validation_date`: Data de validade
+- `security_code`: CVV (apenas na criação/atualização)
+- `credit_limit`: Limite atual
+- `max_limit`: Limite máximo
+- `associated_account`: ID da conta associada
+
+**Campos opcionais:**
+- `card_number`: Número do cartão (criptografado)
+- `is_active`: Se está ativo (padrão: true)
+- `closing_day`: Dia de fechamento da fatura
+- `due_day`: Dia de vencimento da fatura
+- `interest_rate`: Taxa de juros (%)
+- `annual_fee`: Anuidade
+- `owner`: ID do proprietário
+- `notes`: Observações
+
+### Exemplo de Cartão (Resposta Completa)
 
 ```json
 {
@@ -221,7 +300,15 @@ O campo `security_code` (CVV) é **automaticamente criptografado** antes de ser 
     "validation_date": "2028-12-31",
     "credit_limit": "5000.00",
     "max_limit": "10000.00",
-    "associated_account": 1
+    "associated_account": 1,
+    "card_number": "****1234",
+    "is_active": true,
+    "closing_day": 15,
+    "due_day": 10,
+    "interest_rate": "2.50",
+    "annual_fee": "120.00",
+    "owner": 1,
+    "notes": "Cartão para gastos principais"
 }
 ```
 
@@ -237,6 +324,98 @@ O campo `security_code` (CVV) é **automaticamente criptografado** antes de ser 
     "credit_limit": "3000.00",
     "max_limit": "8000.00",
     "associated_account": 1
+}
+```
+
+## 📄 Faturas de Cartão (Credit Card Bills)
+
+### Campos da Fatura
+
+**Campos obrigatórios:**
+- `credit_card`: ID do cartão de crédito
+- `year`: Ano da fatura (2025, 2026, 2027, 2028, 2029, 2030)
+- `month`: Mês da fatura (Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+- `invoice_beginning_date`: Data de início da fatura
+- `invoice_ending_date`: Data de fim da fatura
+- `closed`: Se a fatura está fechada
+
+**Campos opcionais:**
+- `total_amount`: Valor total da fatura (padrão: 0.00)
+- `minimum_payment`: Valor mínimo para pagamento (padrão: 0.00)
+- `due_date`: Data de vencimento
+- `paid_amount`: Valor pago (padrão: 0.00)
+- `payment_date`: Data do pagamento
+- `interest_charged`: Juros cobrados (padrão: 0.00)
+- `late_fee`: Multa por atraso (padrão: 0.00)
+- `status`: Status da fatura (open, closed, paid, overdue)
+
+### Exemplo de Fatura
+
+```json
+{
+    "id": 1,
+    "credit_card": 1,
+    "year": "2024",
+    "month": "Jan",
+    "invoice_beginning_date": "2024-01-05",
+    "invoice_ending_date": "2024-02-04",
+    "closed": false,
+    "total_amount": "1250.75",
+    "minimum_payment": "125.00",
+    "due_date": "2024-02-15",
+    "paid_amount": "0.00",
+    "payment_date": null,
+    "interest_charged": "0.00",
+    "late_fee": "0.00",
+    "status": "open"
+}
+```
+
+## 💳 Despesas de Cartão (Credit Card Expenses)
+
+### Campos da Despesa de Cartão
+
+**Campos obrigatórios:**
+- `description`: Descrição da compra
+- `value`: Valor da compra
+- `date`: Data da compra
+- `horary`: Horário da compra
+- `category`: Categoria da despesa
+- `card`: ID do cartão usado
+- `installment`: Número da parcela atual
+- `payed`: Se foi paga
+
+**Campos opcionais:**
+- `total_installments`: Total de parcelas (padrão: 1)
+- `merchant`: Nome do estabelecimento
+- `transaction_id`: ID da transação
+- `location`: Local da compra
+- `bill`: ID da fatura associada
+- `member`: ID do membro responsável
+- `notes`: Observações
+- `receipt`: Comprovante da compra
+
+### Exemplo de Despesa de Cartão
+
+```json
+{
+    "id": 1,
+    "description": "Compra online Amazon",
+    "value": "299.90",
+    "date": "2024-01-15",
+    "horary": "14:20:00",
+    "category": "electronics",
+    "card": 1,
+    "installment": 3,
+    "payed": false,
+    "total_installments": 6,
+    "merchant": "Amazon Brasil",
+    "transaction_id": "AMZ123456789",
+    "location": "E-commerce",
+    "bill": 1,
+    "member": 1,
+    "notes": "Fone de ouvido bluetooth",
+    "receipt": "/media/credit_cards/receipts/amazon_receipt.pdf"
 }
 ```
 
@@ -265,7 +444,28 @@ O campo `security_code` (CVV) é **automaticamente criptografado** antes de ser 
 - **PUT** `/revenues/{id}/` - Atualiza receita
 - **DELETE** `/revenues/{id}/` - Exclui receita
 
-### Exemplo de Receita
+### Campos Completos da Receita
+
+**Campos obrigatórios:**
+- `description`: Descrição da receita
+- `value`: Valor bruto
+- `date`: Data da receita
+- `horary`: Horário da receita
+- `category`: Categoria da receita
+- `account`: ID da conta
+- `received`: Se foi recebida
+
+**Campos opcionais:**
+- `source`: Fonte da receita
+- `tax_amount`: Valor de impostos (padrão: 0.00)
+- `net_amount`: Valor líquido (calculado automaticamente)
+- `member`: ID do membro responsável
+- `receipt`: Arquivo do comprovante
+- `recurring`: Se é receita recorrente (padrão: false)
+- `frequency`: Frequência se recorrente
+- `notes`: Observações
+
+### Exemplo de Receita (Completa)
 
 ```json
 {
@@ -276,7 +476,15 @@ O campo `security_code` (CVV) é **automaticamente criptografado** antes de ser 
     "horary": "08:00:00",
     "category": "salary",
     "account": 1,
-    "received": true
+    "received": true,
+    "source": "Empresa XYZ Ltda",
+    "tax_amount": "450.00",
+    "net_amount": "4050.00",
+    "member": 1,
+    "receipt": "/media/revenues/receipts/holerite_jan.pdf",
+    "recurring": true,
+    "frequency": "monthly",
+    "notes": "Salário fixo mensal"
 }
 ```
 
@@ -314,7 +522,31 @@ Sistema unificado para cadastro de pessoas relacionadas (família, amigos, credo
 - `is_benefited=true/false` - Filtrar apenas beneficiários
 - `active=true/false` - Filtrar por status
 
-### Exemplo de Membro
+### Campos Completos do Membro
+
+**Campos obrigatórios:**
+- `name`: Nome completo
+- `document`: Documento (CPF/CNPJ) - único
+- `phone`: Telefone
+- `sex`: Sexo (M - Masculino / F - Feminino)
+
+**Campos opcionais básicos:**
+- `email`: Email válido
+- `is_user`: Se é usuário do sistema (padrão: true)
+- `is_creditor`: Se pode ser credor (padrão: true)
+- `is_benefited`: Se pode ser beneficiário (padrão: true)
+- `active`: Status ativo (padrão: true)
+
+**Novos campos opcionais:**
+- `birth_date`: Data de nascimento
+- `address`: Endereço completo
+- `profile_photo`: Foto de perfil
+- `emergency_contact`: Contato de emergência
+- `monthly_income`: Renda mensal
+- `occupation`: Profissão/ocupação
+- `notes`: Observações
+
+### Exemplo de Membro (Completo)
 
 ```json
 {
@@ -327,9 +559,22 @@ Sistema unificado para cadastro de pessoas relacionadas (família, amigos, credo
     "is_user": true,
     "is_creditor": true,
     "is_benefited": true,
-    "active": true
+    "active": true,
+    "birth_date": "1990-05-15",
+    "address": "Rua das Flores, 123 - São Paulo/SP",
+    "profile_photo": "/media/members/photos/joao.jpg",
+    "emergency_contact": "Maria Silva - 11888777666",
+    "monthly_income": "5000.00",
+    "occupation": "Desenvolvedor",
+    "notes": "Membro fundador",
+    "age": 34,
+    "is_user_linked": true
 }
 ```
+
+**Propriedades calculadas:**
+- `age`: Idade calculada baseada na data de nascimento
+- `is_user_linked`: True se vinculado a um usuário do sistema
 
 ### Validações
 
@@ -356,17 +601,49 @@ Sistema para registrar transferências entre contas próprias.
 - **PUT** `/transfers/{id}/` - Atualiza transferência
 - **DELETE** `/transfers/{id}/` - Exclui transferência
 
-### Exemplo de Transferência
+### Campos Completos da Transferência
+
+**Campos obrigatórios:**
+- `description`: Descrição da transferência
+- `value`: Valor transferido
+- `date`: Data da transferência
+- `horary`: Horário da transferência
+- `category`: Tipo de transferência (doc, ted, pix)
+- `origin_account`: ID da conta de origem
+- `destiny_account`: ID da conta de destino
+- `transfered`: Se foi transferido
+
+**Campos opcionais:**
+- `transaction_id`: ID único da transação
+- `fee`: Taxa cobrada (padrão: 0.00)
+- `exchange_rate`: Taxa de câmbio (se aplicável)
+- `processed_at`: Data/hora do processamento
+- `confirmation_code`: Código de confirmação
+- `notes`: Observações
+- `receipt`: Comprovante da transferência
+- `member`: ID do membro responsável
+
+### Exemplo de Transferência (Completa)
 
 ```json
 {
     "id": 1,
+    "description": "Transferência para poupança",
     "value": "500.00",
     "date": "2024-01-18",
     "horary": "10:15:00",
+    "category": "pix",
     "origin_account": 1,
-    "destination_account": 2,
-    "description": "Transferência para poupança"
+    "destiny_account": 2,
+    "transfered": true,
+    "transaction_id": "TXN123456789",
+    "fee": "0.00",
+    "exchange_rate": null,
+    "processed_at": "2024-01-18T10:15:23Z",
+    "confirmation_code": "CONF789",
+    "notes": "Reserva de emergência",
+    "receipt": "/media/transfers/receipts/transfer_123.pdf",
+    "member": 1
 }
 ```
 
@@ -398,7 +675,32 @@ Sistema para controlar empréstimos feitos a terceiros.
 - **PUT** `/loans/{id}/` - Atualiza empréstimo
 - **DELETE** `/loans/{id}/` - Exclui empréstimo
 
-### Exemplo de Empréstimo
+### Campos Completos do Empréstimo
+
+**Campos obrigatórios:**
+- `description`: Descrição do empréstimo
+- `value`: Valor total
+- `payed_value`: Valor já pago
+- `date`: Data do empréstimo
+- `horary`: Horário do empréstimo
+- `category`: Categoria da despesa
+- `account`: ID da conta
+- `benefited`: ID do beneficiado (quem recebeu)
+- `creditor`: ID do credor (quem emprestou)
+- `payed`: Se foi quitado
+
+**Campos opcionais:**
+- `interest_rate`: Taxa de juros (%)
+- `installments`: Número de parcelas (padrão: 1)
+- `due_date`: Data de vencimento
+- `contract_document`: Documento do contrato
+- `payment_frequency`: Frequência de pagamento (padrão: monthly)
+- `late_fee`: Multa por atraso (padrão: 0.00)
+- `guarantor`: ID do avalista
+- `notes`: Observações
+- `status`: Status (active, paid, overdue, cancelled)
+
+### Exemplo de Empréstimo (Completo)
 
 ```json
 {
@@ -408,9 +710,20 @@ Sistema para controlar empréstimos feitos a terceiros.
     "payed_value": "1500.00",
     "date": "2024-01-10",
     "horary": "09:00:00",
-    "category": "personal",
+    "category": "house",
     "account": 1,
-    "creditor": 1
+    "benefited": 2,
+    "creditor": 1,
+    "payed": false,
+    "interest_rate": "2.00",
+    "installments": 12,
+    "due_date": "2024-12-10",
+    "contract_document": "/media/loans/contracts/contrato_123.pdf",
+    "payment_frequency": "monthly",
+    "late_fee": "50.00",
+    "guarantor": 3,
+    "notes": "Empréstimo para reforma da cozinha",
+    "status": "active"
 }
 ```
 
@@ -487,6 +800,57 @@ A API utiliza um sistema de permissões baseado no sistema padrão do Django. Ca
     "detail": "Not found."
 }
 ```
+
+## 📋 Opções de Enumeração
+
+### Frequências de Pagamento (PAYMENT_FREQUENCY_CHOICES)
+
+| Código | Nome |
+|--------|------|
+| daily | Diário |
+| weekly | Semanal |
+| monthly | Mensal |
+| quarterly | Trimestral |
+| semiannual | Semestral |
+| annual | Anual |
+
+### Métodos de Pagamento (PAYMENT_METHOD_CHOICES)
+
+| Código | Nome |
+|--------|------|
+| cash | Dinheiro |
+| debit_card | Cartão de Débito |
+| credit_card | Cartão de Crédito |
+| pix | PIX |
+| transfer | Transferência |
+| check | Cheque |
+| other | Outro |
+
+### Status de Empréstimo (LOAN_STATUS_CHOICES)
+
+| Código | Nome |
+|--------|------|
+| active | Ativo |
+| paid | Quitado |
+| overdue | Em atraso |
+| cancelled | Cancelado |
+
+### Status de Fatura (BILL_STATUS_CHOICES)
+
+| Código | Nome |
+|--------|------|
+| open | Aberta |
+| closed | Fechada |
+| paid | Paga |
+| overdue | Em atraso |
+
+### Categorias de Transferência (TRANSFER_CATEGORIES)
+
+| Código | Nome |
+|--------|------|
+| doc | DOC |
+| ted | TED |
+| pix | PIX |
 
 ## 🔧 Configuração do Ambiente
 

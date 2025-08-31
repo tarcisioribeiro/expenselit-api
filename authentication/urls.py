@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenObtainPairView, TokenRefreshView, TokenVerifyView
 )
-from .views import LogoutView, get_user_permissions
+from .views import LogoutView, get_user_permissions, get_available_users, create_user_with_member
 
 
 urlpatterns = [
@@ -30,5 +30,15 @@ urlpatterns = [
         "user/permissions/",
         get_user_permissions,
         name="user-permissions"
+    ),
+    path(
+        "users/available/",
+        get_available_users,
+        name="available-users"
+    ),
+    path(
+        "users/register/",
+        create_user_with_member,
+        name="register-user"
     ),
 ]

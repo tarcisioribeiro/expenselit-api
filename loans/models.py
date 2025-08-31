@@ -2,9 +2,10 @@ from django.db import models
 from accounts.models import Account
 from expenses.models import EXPENSES_CATEGORIES
 from members.models import Member
+from app.models import BaseModel, PAYMENT_FREQUENCY_CHOICES, LOAN_STATUS_CHOICES
 
 
-class Loan(models.Model):
+class Loan(BaseModel):
     description = models.CharField(
         max_length=200,
         verbose_name='Descrição',
@@ -58,6 +59,59 @@ class Loan(models.Model):
         related_name="Creditor"
     )
     payed = models.BooleanField(verbose_name="Pago")
+    interest_rate = models.DecimalField(
+        verbose_name="Taxa de Juros (%)",
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
+    installments = models.IntegerField(
+        verbose_name="Número de Parcelas",
+        default=1
+    )
+    due_date = models.DateField(
+        verbose_name="Data de Vencimento",
+        null=True,
+        blank=True
+    )
+    contract_document = models.FileField(
+        upload_to='loans/contracts/',
+        verbose_name="Documento do Contrato",
+        null=True,
+        blank=True
+    )
+    payment_frequency = models.CharField(
+        max_length=20,
+        choices=PAYMENT_FREQUENCY_CHOICES,
+        verbose_name="Frequência de Pagamento",
+        default='monthly'
+    )
+    late_fee = models.DecimalField(
+        verbose_name="Multa por Atraso",
+        max_digits=10,
+        decimal_places=2,
+        default=0.00
+    )
+    guarantor = models.ForeignKey(
+        Member,
+        on_delete=models.PROTECT,
+        verbose_name="Avalista",
+        related_name="Guarantor",
+        null=True,
+        blank=True
+    )
+    notes = models.TextField(
+        verbose_name="Observações",
+        null=True,
+        blank=True
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=LOAN_STATUS_CHOICES,
+        verbose_name="Status",
+        default='active'
+    )
 
     class Meta:
         ordering = ['-date']

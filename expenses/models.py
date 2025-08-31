@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import Account
+from app.models import BaseModel, PAYMENT_METHOD_CHOICES, PAYMENT_FREQUENCY_CHOICES
 
 
 EXPENSES_CATEGORIES = (
@@ -28,7 +29,7 @@ EXPENSES_CATEGORIES = (
 )
 
 
-class Expense(models.Model):
+class Expense(BaseModel):
     description = models.CharField(
         max_length=100,
         null=False,
@@ -60,6 +61,55 @@ class Expense(models.Model):
         verbose_name="Conta"
     )
     payed = models.BooleanField(verbose_name="Pago")
+    merchant = models.CharField(
+        max_length=200,
+        verbose_name="Estabelecimento",
+        null=True,
+        blank=True
+    )
+    location = models.CharField(
+        max_length=200,
+        verbose_name="Local da Compra",
+        null=True,
+        blank=True
+    )
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHOD_CHOICES,
+        verbose_name="Método de Pagamento",
+        null=True,
+        blank=True
+    )
+    receipt = models.FileField(
+        upload_to='expenses/receipts/',
+        verbose_name="Comprovante",
+        null=True,
+        blank=True
+    )
+    member = models.ForeignKey(
+        'members.Member',
+        on_delete=models.PROTECT,
+        verbose_name="Membro Responsável",
+        null=True,
+        blank=True
+    )
+    notes = models.TextField(
+        verbose_name="Observações",
+        null=True,
+        blank=True
+    )
+    recurring = models.BooleanField(
+        verbose_name="Despesa Recorrente",
+        default=False
+    )
+    frequency = models.CharField(
+        max_length=20,
+        choices=PAYMENT_FREQUENCY_CHOICES,
+        verbose_name="Frequência",
+        null=True,
+        blank=True,
+        help_text="Apenas se for recorrente"
+    )
 
     class Meta:
         ordering = ['-date']

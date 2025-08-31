@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import Account
+from app.models import BaseModel
 
 
 TRANSFER_CATEGORIES = (
@@ -9,7 +10,7 @@ TRANSFER_CATEGORIES = (
 )
 
 
-class Transfer(models.Model):
+class Transfer(BaseModel):
     description = models.CharField(
         max_length=200,
         null=False,
@@ -58,6 +59,55 @@ class Transfer(models.Model):
     )
     transfered = models.BooleanField(
         verbose_name="Transferido"
+    )
+    transaction_id = models.CharField(
+        max_length=100,
+        verbose_name="ID da Transação",
+        null=True,
+        blank=True,
+        unique=True
+    )
+    fee = models.DecimalField(
+        verbose_name="Taxa",
+        max_digits=10,
+        decimal_places=2,
+        default=0.00
+    )
+    exchange_rate = models.DecimalField(
+        verbose_name="Taxa de Câmbio",
+        max_digits=10,
+        decimal_places=6,
+        null=True,
+        blank=True
+    )
+    processed_at = models.DateTimeField(
+        verbose_name="Processado em",
+        null=True,
+        blank=True
+    )
+    confirmation_code = models.CharField(
+        max_length=50,
+        verbose_name="Código de Confirmação",
+        null=True,
+        blank=True
+    )
+    notes = models.TextField(
+        verbose_name="Observações",
+        null=True,
+        blank=True
+    )
+    receipt = models.FileField(
+        upload_to='transfers/receipts/',
+        verbose_name="Comprovante",
+        null=True,
+        blank=True
+    )
+    member = models.ForeignKey(
+        'members.Member',
+        on_delete=models.PROTECT,
+        verbose_name="Membro Responsável",
+        null=True,
+        blank=True
     )
 
     class Meta:
