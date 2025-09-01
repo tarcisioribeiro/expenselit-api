@@ -25,7 +25,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"senha123\"\n}",
+							"raw": "{\n    \"username\": \"{{DB_USER}}\",\n    \"password\": \"{{DB_PASSWORD}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -408,7 +408,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{access_token}}",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2Njg5MTA5LCJpYXQiOjE3NTY2ODgyMDksImp0aSI6ImViYWFlYzA2MzdmZTRjNTNiZTdlNmQzZmJmYjJjZWEzIiwidXNlcl9pZCI6IjEifQ.EJneBgXw11ifMNy62FluoRH_kgb5QrdI7Tr2FBdGaSY",
 									"type": "string"
 								}
 							]
@@ -416,7 +416,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{API_HOST}}/api/v1/expenses/?category=supermarket&payed=true",
+							"raw": "{{API_HOST}}/api/v1/expenses/",
 							"host": [
 								"{{API_HOST}}"
 							],
@@ -425,18 +425,6 @@
 								"v1",
 								"expenses",
 								""
-							],
-							"query": [
-								{
-									"key": "category",
-									"value": "supermarket",
-									"description": "Filtrar por categoria"
-								},
-								{
-									"key": "payed",
-									"value": "true",
-									"description": "Filtrar por status de pagamento"
-								}
 							]
 						},
 						"description": "Lista todas as despesas com filtros opcionais.\n\n**Parâmetros de filtro:**\n- `category`: Categoria da despesa\n- `payed`: Status de pagamento (true/false)\n- `account`: ID da conta\n- `date_from`: Data inicial (YYYY-MM-DD)\n- `date_to`: Data final (YYYY-MM-DD)\n\n**Success Response (200):**\n```json\n[\n    {\n        \"id\": 1,\n        \"description\": \"Supermercado Extra\",\n        \"value\": \"234.50\",\n        \"date\": \"2024-01-15\",\n        \"horary\": \"19:30:00\",\n        \"category\": \"supermarket\",\n        \"account\": 1,\n        \"payed\": true\n    },\n    {\n        \"id\": 2,\n        \"description\": \"Netflix\",\n        \"value\": \"29.90\",\n        \"date\": \"2024-01-10\",\n        \"horary\": \"08:00:00\",\n        \"category\": \"digital signs\",\n        \"account\": 1,\n        \"payed\": true\n    }\n]\n```"
@@ -736,7 +724,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{access_token}}",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2Njg5MTA5LCJpYXQiOjE3NTY2ODgyMDksImp0aSI6ImViYWFlYzA2MzdmZTRjNTNiZTdlNmQzZmJmYjJjZWEzIiwidXNlcl9pZCI6IjEifQ.EJneBgXw11ifMNy62FluoRH_kgb5QrdI7Tr2FBdGaSY",
 									"type": "string"
 								}
 							]
@@ -767,7 +755,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{access_token}}",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2Njg5MTA5LCJpYXQiOjE3NTY2ODgyMDksImp0aSI6ImViYWFlYzA2MzdmZTRjNTNiZTdlNmQzZmJmYjJjZWEzIiwidXNlcl9pZCI6IjEifQ.EJneBgXw11ifMNy62FluoRH_kgb5QrdI7Tr2FBdGaSY",
 									"type": "string"
 								}
 							]
@@ -781,7 +769,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"description\": \"Venda de produto\",\n    \"value\": \"350.00\",\n    \"date\": \"2024-01-22\",\n    \"horary\": \"15:20:00\",\n    \"category\": \"income\",\n    \"account\": 1,\n    \"received\": true\n}",
+							"raw": "{\n        \"id\": 2,\n        \"description\": \"Aporte Inicial\",\n        \"value\": \"500.00\",\n        \"date\": \"2025-08-31\",\n        \"horary\": \"21:58:26\",\n        \"category\": \"received_loan\",\n        \"account\": 1,\n        \"received\": true,\n        \"source\": \"Teste\",\n        \"tax_amount\": \"1.00\",\n        \"net_amount\": \"500.00\",\n        \"member\": 1,\n        \"receipt\": null,\n        \"recurring\": false,\n        \"frequency\": \"quarterly\",\n        \"notes\": \"\"\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
