@@ -98,24 +98,24 @@ AUTH_PASSWORD_TYPES = [
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': f'django.contrib.auth.password_validation.{
+        'NAME': f'''django.contrib.auth.password_validation.{
             AUTH_PASSWORD_TYPES[0]
-        }',
+        }''',
     },
     {
-        'NAME': f'django.contrib.auth.password_validation.{
+        'NAME': f'''django.contrib.auth.password_validation.{
             AUTH_PASSWORD_TYPES[1]
-        }',
+        }''',
     },
     {
-        'NAME': f'django.contrib.auth.password_validation.{
+        'NAME': f'''django.contrib.auth.password_validation.{
             AUTH_PASSWORD_TYPES[2]
-        }',
+        }''',
     },
     {
-        'NAME': f'django.contrib.auth.password_validation.{
+        'NAME': f'''django.contrib.auth.password_validation.{
             AUTH_PASSWORD_TYPES[3]
-        }',
+        }''',
     },
 ]
 

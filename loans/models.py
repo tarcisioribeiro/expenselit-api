@@ -123,6 +123,6 @@ class Loan(BaseModel):
         verbose_name_plural = "Empréstimos"
 
     def __str__(self):
-        return f"{
+        return f"""{
             self.description
-        },{self.category} - {self.date},{self.horary}"
+        },{self.category} - {self.date},{self.horary}"""
