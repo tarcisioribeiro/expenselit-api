@@ -13,13 +13,13 @@ class AuditLoggingMiddleware(MiddlewareMixin):
     Middleware for logging user actions and API requests.
     Logs all POST, PUT, PATCH, DELETE requests with user information.
     """
-    
+
     # Sensitive fields that should not be logged
     SENSITIVE_FIELDS = [
-        'password', 'token', 'key', 'secret', 'cvv', 
+        'password', 'token', 'key', 'secret', 'cvv',
         'security_code', '_security_code', 'csrf_token'
     ]
-    
+
     # Paths to exclude from logging
     EXCLUDED_PATHS = [
         '/admin/jsi18n/',
@@ -35,28 +35,32 @@ class AuditLoggingMiddleware(MiddlewareMixin):
         request._audit_start_time = now()
         return None
 
-    def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
+    def process_response(self, request: HttpRequest,
+                         response: HttpResponse) -> HttpResponse:
         """Log the request after processing"""
-        
+
         # Skip logging for excluded paths
         if any(request.path.startswith(path) for path in self.EXCLUDED_PATHS):
             return response
-            
+
         # Only log modification requests and errors
-        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE'] or response.status_code >= 400:
+        if (request.method in ['POST', 'PUT', 'PATCH', 'DELETE'] or
+                response.status_code >= 400):
             self._log_request(request, response)
-            
+
         return response
 
-    def _log_request(self, request: HttpRequest, response: HttpResponse) -> None:
+    def _log_request(self, request: HttpRequest,
+                     response: HttpResponse) -> None:
         """Create audit log entry"""
-        
+
         try:
             # Calculate request duration
             duration = None
             if hasattr(request, '_audit_start_time'):
-                duration = (now() - request._audit_start_time).total_seconds()
-            
+                duration = ((now() - request._audit_start_time)
+                            .total_seconds())
+
             # Prepare log data
             log_data = {
                 'timestamp': now().isoformat(),
@@ -68,15 +72,15 @@ class AuditLoggingMiddleware(MiddlewareMixin):
                 'user_agent': request.META.get('HTTP_USER_AGENT', ''),
                 'duration_seconds': duration,
             }
-            
+
             # Add request body for modification operations
             if request.method in ['POST', 'PUT', 'PATCH']:
                 log_data['request_data'] = self._get_safe_request_data(request)
-            
+
             # Add query parameters
             if request.GET:
                 log_data['query_params'] = dict(request.GET)
-            
+
             # Add response info for errors
             if response.status_code >= 400:
                 log_data['error'] = True
@@ -86,17 +90,18 @@ class AuditLoggingMiddleware(MiddlewareMixin):
                         log_data['error_details'] = response.data
                     elif response.content:
                         content = response.content.decode('utf-8')
-                        if len(content) < 1000:  # Only log short error messages
+                        # Only log short error messages
+                        if len(content) < 1000:
                             log_data['error_details'] = content
                 except Exception:
                     pass
-            
+
             # Log the audit entry
             if response.status_code >= 400:
                 logger.error('API request failed', extra=log_data)
             else:
                 logger.info('User action logged', extra=log_data)
-                
+
         except Exception as e:
             # Don't let audit logging break the request
             logger.error(f'Failed to create audit log: {str(e)}')
@@ -131,17 +136,17 @@ class AuditLoggingMiddleware(MiddlewareMixin):
             else:
                 # Handle form data
                 data = dict(request.POST)
-                
+
             # Remove sensitive fields
             safe_data = self._sanitize_data(data)
-            
+
             # Limit size of logged data
             data_str = json.dumps(safe_data)
             if len(data_str) > 2000:
                 return {'message': 'Request data too large to log'}
-            
+
             return safe_data
-            
+
         except Exception as e:
             return {'error': f'Could not parse request data: {str(e)}'}
 
@@ -150,7 +155,8 @@ class AuditLoggingMiddleware(MiddlewareMixin):
         if isinstance(data, dict):
             sanitized = {}
             for key, value in data.items():
-                if any(sensitive in key.lower() for sensitive in self.SENSITIVE_FIELDS):
+                if any(sensitive in key.lower()
+                       for sensitive in self.SENSITIVE_FIELDS):
                     sanitized[key] = '[REDACTED]'
                 else:
                     sanitized[key] = self._sanitize_data(value)
@@ -165,26 +171,28 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
     """
     Middleware to add security headers to responses.
     """
-    
-    def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
+
+    def process_response(self, request: HttpRequest,
+                         response: HttpResponse) -> HttpResponse:
         """Add security headers"""
-        
+
         # Only add security headers to HTML responses and API responses
-        if response.get('Content-Type', '').startswith(('text/html', 'application/json')):
+        content_type = response.get('Content-Type', '')
+        if content_type.startswith(('text/html', 'application/json')):
             # Prevent clickjacking
             response['X-Frame-Options'] = 'DENY'
-            
+
             # Prevent MIME type sniffing
             response['X-Content-Type-Options'] = 'nosniff'
-            
+
             # Enable XSS protection
             response['X-XSS-Protection'] = '1; mode=block'
-            
+
             # Referrer policy
             response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-            
+
             # Content Security Policy (basic)
             if not response.get('Content-Security-Policy'):
                 response['Content-Security-Policy'] = "default-src 'self'"
-        
+
         return response

@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 from pathlib import Path
 from datetime import timedelta
@@ -26,8 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'django_filters',
     'app',
+    'authentication',
     'accounts',
     'credit_cards',
     'expenses',
@@ -80,7 +83,6 @@ DATABASES = {
 }
 
 # Use SQLite for tests to avoid database connection issues
-import sys  # type: ignore
 if 'test' in sys.argv:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -164,7 +166,10 @@ LOGGING = {
             'format': '%(asctime)s %(name)s %(levelname)s %(message)s'
         },
         'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'format': (
+                '{levelname} {asctime} {module} '
+                '{process:d} {thread:d} {message}'
+            ),
             'style': '{',
         },
         'simple': {
@@ -176,7 +181,9 @@ LOGGING = {
         'console': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
-            'formatter': 'json' if os.getenv('LOG_FORMAT') == 'json' else 'verbose',
+            'formatter': (
+                'json' if os.getenv('LOG_FORMAT') == 'json' else 'verbose'
+            ),
         },
     },
     'loggers': {

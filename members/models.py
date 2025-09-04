@@ -115,7 +115,7 @@ class Member(BaseModel):
     def is_user(self):
         """
         Retorna True se o membro está vinculado a um usuário do sistema.
-        
+
         Returns
         -------
         bool
@@ -127,7 +127,7 @@ class Member(BaseModel):
     def age(self):
         """
         Calcula a idade baseada na data de nascimento.
-        
+
         Returns
         -------
         int or None
@@ -136,7 +136,14 @@ class Member(BaseModel):
         if self.birth_date:
             from datetime import date
             today = date.today()
-            return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+            return (
+                today.year - self.birth_date.year - (
+                    (today.month, today.day) < (
+                        self.birth_date.month,
+                        self.birth_date.day
+                    )
+                )
+            )
         return None
 
     def __str__(self):

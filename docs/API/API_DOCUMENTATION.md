@@ -131,7 +131,7 @@ Authorization: Bearer {access_token}
 }
 ```
 
-**⚠️ Segurança:** O campo `account_number` é automaticamente criptografado ao ser salvo e retornado parcialmente mascarado.
+**⚠️ Segurança:** O campo `account_number` é automaticamente criptografado ao ser salvo. Use a propriedade `account_number_masked` para obter a versão mascarada (****1234) nas respostas da API.
 
 ## 💸 Despesas (Expenses)
 
@@ -311,6 +311,8 @@ O campo `security_code` (CVV) é **automaticamente criptografado** antes de ser 
     "notes": "Cartão para gastos principais"
 }
 ```
+
+**⚠️ Segurança:** O campo `card_number` é automaticamente criptografado ao ser salvo. Use a propriedade `card_number_masked` para obter a versão mascarada (****1234) nas respostas da API. O campo `security_code` (CVV) é criptografado e nunca retornado nas respostas.
 
 ### Exemplo de Cartão (Criação)
 
@@ -532,7 +534,7 @@ Sistema unificado para cadastro de pessoas relacionadas (família, amigos, credo
 
 **Campos opcionais básicos:**
 - `email`: Email válido
-- `is_user`: Se é usuário do sistema (padrão: true)
+- `user`: ID do usuário do sistema (OneToOneField, opcional)
 - `is_creditor`: Se pode ser credor (padrão: true)
 - `is_benefited`: Se pode ser beneficiário (padrão: true)
 - `active`: Status ativo (padrão: true)
@@ -574,7 +576,7 @@ Sistema unificado para cadastro de pessoas relacionadas (família, amigos, credo
 
 **Propriedades calculadas:**
 - `age`: Idade calculada baseada na data de nascimento
-- `is_user_linked`: True se vinculado a um usuário do sistema
+- `is_user`: True se vinculado a um usuário do sistema (campo calculado)
 
 ### Validações
 

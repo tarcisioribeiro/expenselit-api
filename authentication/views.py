@@ -19,14 +19,14 @@ class LogoutView(APIView):
 @permission_classes([IsAuthenticated])
 def get_user_permissions(request):
     user = request.user
-    
+
     # Bloqueia superusuários de usar a interface Streamlit
     if user.is_superuser:
         return Response(
             {'error': 'Administradores não podem acessar esta interface'},
             status=status.HTTP_403_FORBIDDEN
         )
-    
+
     perms = user.get_all_permissions()
     return Response({
         "username": user.username,
@@ -44,12 +44,12 @@ def get_available_users(request):
     Exclui superusuários e usuários já vinculados a membros.
     """
     from members.models import Member
-    
+
     # Pega IDs de usuários já vinculados a membros
     linked_user_ids = Member.objects.filter(
         user__isnull=False
     ).values_list('user_id', flat=True)
-    
+
     # Lista usuários não superusuários e não vinculados
     available_users = User.objects.filter(
         is_superuser=False,
@@ -57,7 +57,7 @@ def get_available_users(request):
     ).exclude(
         id__in=linked_user_ids
     ).values('id', 'username', 'first_name', 'last_name', 'email')
-    
+
     return Response(list(available_users))
 
 
@@ -69,35 +69,35 @@ def create_user_with_member(request):
     """
     from members.models import Member
     from django.db import transaction
-    
+
     username = request.data.get('username')
     password = request.data.get('password')
     name = request.data.get('name')
     document = request.data.get('document')
     phone = request.data.get('phone')
     email = request.data.get('email')
-    
+
     # Validações básicas
     if not all([username, password, name, document, phone]):
         return Response(
             {'error': 'Todos os campos obrigatórios devem ser preenchidos'},
             status=status.HTTP_400_BAD_REQUEST
         )
-    
+
     # Verifica se username já existe
     if User.objects.filter(username=username).exists():
         return Response(
             {'error': 'Nome de usuário já existe'},
             status=status.HTTP_400_BAD_REQUEST
         )
-    
+
     # Verifica se documento já existe
     if Member.objects.filter(document=document).exists():
         return Response(
             {'error': 'Documento já cadastrado'},
             status=status.HTTP_400_BAD_REQUEST
         )
-    
+
     try:
         with transaction.atomic():
             # Cria o usuário
@@ -106,12 +106,16 @@ def create_user_with_member(request):
                 password=password,
                 email=email or '',
                 first_name=name.split()[0] if name else '',
-                last_name=' '.join(name.split()[1:]) if len(name.split()) > 1 else '',
+                last_name=(
+                    ' '.join(name.split()[1:]) if len(
+                        name.split()
+                    ) > 1 else ''
+                ),
                 is_superuser=False,
                 is_staff=False,
                 is_active=True
             )
-            
+
             # Adiciona usuário ao grupo members
             from django.contrib.auth.models import Group
             try:
@@ -119,7 +123,7 @@ def create_user_with_member(request):
                 user.groups.add(members_group)
             except Group.DoesNotExist:
                 pass
-            
+
             # Cria o membro vinculado
             member = Member.objects.create(
                 name=name,
@@ -132,14 +136,14 @@ def create_user_with_member(request):
                 is_benefited=True,
                 active=True
             )
-            
+
             return Response({
                 'message': 'Usuário criado com sucesso',
                 'user_id': user.id,
                 'member_id': member.id,
                 'username': username
             }, status=status.HTTP_201_CREATED)
-            
+
     except Exception as e:
         return Response(
             {'error': f'Erro ao criar usuário: {str(e)}'},

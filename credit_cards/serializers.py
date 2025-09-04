@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.core.exceptions import ValidationError
 from credit_cards.models import CreditCard, CreditCardBill, CreditCardExpense
 
 
@@ -10,11 +9,11 @@ class CreditCardSerializer(serializers.ModelSerializer):
         write_only=True,
         help_text="CVV do cartão (3 ou 4 dígitos)"
     )
-    
+
     class Meta:
         model = CreditCard
-        exclude = ['_security_code']  # Exclude the encrypted field from serialization
-    
+        exclude = ['_security_code']
+
     def validate_security_code(self, value):
         """
         Validação customizada para o CVV.
@@ -24,7 +23,7 @@ class CreditCardSerializer(serializers.ModelSerializer):
         if len(value) not in [3, 4]:
             raise serializers.ValidationError("CVV deve ter 3 ou 4 dígitos")
         return value
-    
+
     def validate_validation_date(self, value):
         """
         Validação customizada para data de validade.
@@ -35,7 +34,7 @@ class CreditCardSerializer(serializers.ModelSerializer):
                 "Data de validade deve ser posterior à data atual"
             )
         return value
-    
+
     def create(self, validated_data):
         """
         Override do create para lidar com o campo criptografado.
@@ -46,7 +45,7 @@ class CreditCardSerializer(serializers.ModelSerializer):
             instance.security_code = security_code
             instance.save()
         return instance
-    
+
     def update(self, instance, validated_data):
         """
         Override do update para lidar com o campo criptografado.

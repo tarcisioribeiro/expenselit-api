@@ -43,4 +43,10 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic --noinput
 python createsuperuser.py
+
+# Configurar grupo 'members' e suas permissões
+echo "🔧 Configurando grupos e permissões do sistema..."
+python setup_members.py
+
+echo "🚀 Iniciando servidor Django..."
 python manage.py runserver 0.0.0.0:8002

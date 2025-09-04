@@ -8,11 +8,11 @@ from app.permissions import GlobalDefaultPermission
 class AccountCreateListView(generics.ListCreateAPIView):
     """
     ViewSet para listar e criar contas bancárias.
-    
+
     Permite:
     - GET: Lista todas as contas ordenadas por nome
     - POST: Cria uma nova conta
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -33,12 +33,12 @@ class AccountCreateListView(generics.ListCreateAPIView):
 class AccountRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """
     ViewSet para operações individuais em contas bancárias.
-    
+
     Permite:
     - GET: Recupera uma conta específica
     - PUT/PATCH: Atualiza uma conta existente
     - DELETE: Remove uma conta
-    
+
     Attributes
     ----------
     permission_classes : tuple

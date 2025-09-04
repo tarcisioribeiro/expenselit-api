@@ -17,13 +17,14 @@ ExpenseLit API foi desenvolvida para oferecer controle completo sobre finanças 
 
 ## 🚀 Tecnologias Utilizadas
 
-- **[Python 3.13.7](https://www.python.org/downloads/release/python-3137/)** - Linguagem base
+- **[Python 3.12.3](https://www.python.org/downloads/release/python-3123/)** - Linguagem base
 - **[Django 5.2.5](https://www.djangoproject.com/)** - Framework web
-- **[Django REST Framework](https://www.django-rest-framework.org/)** - API REST
-- **[PostgreSQL 16.9](https://www.postgresql.org/docs/release/16.9/)** - Banco de dados
+- **[Django REST Framework 3.16.1](https://www.django-rest-framework.org/)** - API REST
+- **[PostgreSQL](https://www.postgresql.org/)** - Banco de dados
 - **[Docker](https://www.docker.com/)** - Conteinerização
 - **[Cryptography](https://cryptography.io/)** - Criptografia Fernet para CVVs
 - **[SimpleJWT](https://django-rest-framework-simplejwt.readthedocs.io/)** - Autenticação JWT
+- **[Django Admin Dracula](https://pypi.org/project/django-admin-dracula/)** - Interface administrativa customizada
 
 ## 📊 Funcionalidades Principais
 
@@ -62,6 +63,8 @@ ExpenseLit API foi desenvolvida para oferecer controle completo sobre finanças 
 - **Sistema de Permissões**: Controle granular baseado no Django
 - **Validações Robustas**: Entrada de dados sanitizada
 - **HTTPS Ready**: Configurado para produção segura
+- **Middleware de Segurança**: Headers de segurança automáticos
+- **Auditoria de Logs**: Rastreamento estruturado de ações do usuário
 
 ## 🐳 Instalação com Docker
 

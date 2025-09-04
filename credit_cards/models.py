@@ -152,7 +152,7 @@ class CreditCard(BaseModel):
     def security_code(self):
         """
         Propriedade para descriptografar o CVV ao acessá-lo.
-        
+
         Returns
         -------
         str or None
@@ -167,12 +167,12 @@ class CreditCard(BaseModel):
     def security_code(self, value):
         """
         Setter para criptografar o CVV antes de salvá-lo.
-        
+
         Parameters
         ----------
         value : str or None
             Código de segurança (CVV) de 3 ou 4 dígitos.
-            
+
         Raises
         ------
         ValidationError
@@ -192,7 +192,7 @@ class CreditCard(BaseModel):
     def card_number(self):
         """
         Propriedade para descriptografar o número do cartão.
-        
+
         Returns
         -------
         str or None
@@ -201,7 +201,27 @@ class CreditCard(BaseModel):
         if self._card_number:
             try:
                 return FieldEncryption.decrypt_data(self._card_number)
-            except:
+            except Exception:
+                return None
+        return None
+
+    @property
+    def card_number_masked(self):
+        """
+        Propriedade para retornar o número do cartão mascarado.
+
+        Returns
+        -------
+        str or None
+            Número do cartão mascarado (****1234) ou None se não existir.
+        """
+        if self._card_number:
+            try:
+                full_number = FieldEncryption.decrypt_data(self._card_number)
+                if full_number and len(full_number) >= 4:
+                    return '*' * (len(full_number) - 4) + full_number[-4:]
+                return full_number
+            except Exception:
                 return None
         return None
 
@@ -209,7 +229,7 @@ class CreditCard(BaseModel):
     def card_number(self, value):
         """
         Setter para criptografar o número do cartão.
-        
+
         Parameters
         ----------
         value : str or None
@@ -223,7 +243,7 @@ class CreditCard(BaseModel):
     def clean(self):
         """
         Validação customizada do modelo.
-        
+
         Raises
         ------
         ValidationError
@@ -241,7 +261,7 @@ class CreditCard(BaseModel):
     def save(self, *args, **kwargs):
         """
         Override do save para executar validações.
-        
+
         Parameters
         ----------
         *args

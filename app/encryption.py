@@ -1,14 +1,12 @@
 import os
 from cryptography.fernet import Fernet
-from django.conf import settings
 from django.core.exceptions import ValidationError
 
 
 class FieldEncryption:
     """
-    Classe para criptografar/descriptografar campos sensíveis do banco de dados.
+    Classe para criptografar/descriptografar campos sensíveis do banco.
     """
-    
     @staticmethod
     def get_encryption_key():
         """
@@ -20,21 +18,18 @@ class FieldEncryption:
                 "ENCRYPTION_KEY não encontrada nas variáveis de ambiente"
             )
         return encryption_key.encode()
-    
+
     @staticmethod
     def encrypt_data(data):
         """
         Criptografa dados sensíveis.
-        
-        Args:
+            Args:
             data (str): Dados a serem criptografados
-            
-        Returns:
+                Returns:
             str: Dados criptografados em string base64
         """
         if not data:
             return data
-            
         try:
             key = FieldEncryption.get_encryption_key()
             fernet = Fernet(key)
@@ -42,21 +37,18 @@ class FieldEncryption:
             return encrypted_data.decode()
         except Exception as e:
             raise ValidationError(f"Erro ao criptografar dados: {str(e)}")
-    
+
     @staticmethod
     def decrypt_data(encrypted_data):
         """
         Descriptografa dados sensíveis.
-        
-        Args:
+            Args:
             encrypted_data (str): Dados criptografados em string base64
-            
-        Returns:
+                Returns:
             str: Dados descriptografados
         """
         if not encrypted_data:
             return encrypted_data
-            
         try:
             key = FieldEncryption.get_encryption_key()
             fernet = Fernet(key)
@@ -64,14 +56,13 @@ class FieldEncryption:
             return decrypted_data.decode()
         except Exception as e:
             raise ValidationError(f"Erro ao descriptografar dados: {str(e)}")
-    
+
     @staticmethod
     def generate_key():
         """
         Gera uma nova chave de criptografia.
         Use esta função apenas para gerar a chave inicial.
-        
-        Returns:
+            Returns:
             str: Chave de criptografia em base64
         """
         return Fernet.generate_key().decode()

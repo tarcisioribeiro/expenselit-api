@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 class BaseModel(models.Model):
     """
     Modelo base abstrato com campos comuns para auditoria e controle.
-    
     Attributes
     ----------
     uuid : UUIDField

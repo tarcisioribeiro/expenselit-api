@@ -16,11 +16,11 @@ from app.permissions import GlobalDefaultPermission
 class CreditCardCreateListView(generics.ListCreateAPIView):
     """
     ViewSet para listar e criar cartões de crédito.
-    
+
     Permite:
     - GET: Lista todos os cartões de crédito com conta associada
     - POST: Cria um novo cartão de crédito
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -43,12 +43,12 @@ class CreditCardRetrieveUpdateDestroyView(
 ):
     """
     ViewSet para operações individuais em cartões de crédito.
-    
+
     Permite:
     - GET: Recupera um cartão específico
     - PUT/PATCH: Atualiza um cartão existente
     - DELETE: Remove um cartão
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -66,11 +66,11 @@ class CreditCardRetrieveUpdateDestroyView(
 class CreditCardBillCreateListView(generics.ListCreateAPIView):
     """
     ViewSet para listar e criar faturas de cartão de crédito.
-    
+
     Permite:
     - GET: Lista todas as faturas ordenadas por data
     - POST: Cria uma nova fatura
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -96,12 +96,12 @@ class CreditCardBillRetrieveUpdateDestroyView(
 ):
     """
     ViewSet para operações individuais em faturas de cartão.
-    
+
     Permite:
     - GET: Recupera uma fatura específica
     - PUT/PATCH: Atualiza uma fatura existente
     - DELETE: Remove uma fatura
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -112,18 +112,20 @@ class CreditCardBillRetrieveUpdateDestroyView(
         Serializer usado para validação e serialização
     """
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
-    queryset = CreditCardBill.objects.select_related('credit_card', 'credit_card__associated_account').all()
+    queryset = CreditCardBill.objects.select_related(
+        'credit_card', 'credit_card__associated_account'
+    ).all()
     serializer_class = CreditCardBillsSerializer
 
 
 class CreditCardExpenseCreateListView(generics.ListCreateAPIView):
     """
     ViewSet para listar e criar despesas de cartão de crédito.
-    
+
     Permite:
     - GET: Lista todas as despesas do cartão ordenadas por data
     - POST: Cria uma nova despesa no cartão
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -136,7 +138,9 @@ class CreditCardExpenseCreateListView(generics.ListCreateAPIView):
         Ordenação por data e ID (descendente)
     """
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
-    queryset = CreditCardExpense.objects.select_related('card', 'card__associated_account').all()
+    queryset = CreditCardExpense.objects.select_related(
+        'card', 'card__associated_account'
+    ).all()
     serializer_class = CreditCardExpensesSerializer
     ordering = ['-date', '-id']
 
@@ -146,12 +150,12 @@ class CreditCardExpenseRetrieveUpdateDestroyView(
 ):
     """
     ViewSet para operações individuais em despesas de cartão.
-    
+
     Permite:
     - GET: Recupera uma despesa específica
     - PUT/PATCH: Atualiza uma despesa existente
     - DELETE: Remove uma despesa
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -162,5 +166,7 @@ class CreditCardExpenseRetrieveUpdateDestroyView(
         Serializer usado para validação e serialização
     """
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
-    queryset = CreditCardExpense.objects.select_related('card', 'card__associated_account').all()
+    queryset = CreditCardExpense.objects.select_related(
+        'card', 'card__associated_account'
+    ).all()
     serializer_class = CreditCardExpensesSerializer

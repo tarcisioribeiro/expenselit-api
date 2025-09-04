@@ -1,6 +1,10 @@
 from django.db import models
 from accounts.models import Account
-from app.models import BaseModel, PAYMENT_METHOD_CHOICES, PAYMENT_FREQUENCY_CHOICES
+from app.models import (
+    BaseModel,
+    PAYMENT_METHOD_CHOICES,
+    PAYMENT_FREQUENCY_CHOICES
+)
 
 
 EXPENSES_CATEGORIES = (

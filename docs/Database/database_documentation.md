@@ -275,7 +275,7 @@ Fonte: [dbschema.com](https://dbschema.com)
 - `uuid` (unique, uuid)
 - `created_at`, `updated_at`, `is_deleted`, `deleted_at`
 - `name` (varchar 200)
-- `document` (varchar 200, indexed)
+- `document` (varchar 200, indexed, unique)
 - `phone`, `email` (varchar)
 - `sex` (varchar)
 - `is_creditor`, `is_benefited`, `active` (boolean)
@@ -287,7 +287,11 @@ Fonte: [dbschema.com](https://dbschema.com)
 - `occupation` (varchar 200)
 - `notes` (text)
 - `created_by_id`, `updated_by_id` (FK → auth_user.id)
-- `user_id` (FK → auth_user.id, unique)
+- `user_id` (FK → auth_user.id, unique, OneToOneField)
+
+**Propriedades Calculadas:**
+- `is_user`: True se o membro está vinculado a um usuário (user_id não é null)
+- `age`: Idade calculada baseada na data de nascimento
 
 ---
 
@@ -321,15 +325,16 @@ Fonte: [dbschema.com](https://dbschema.com)
 - `description` (varchar 200)
 - `value` (decimal 10,2)
 - `date` (date), `horary` (time)
-- `category` (varchar 200)
+- `category` (varchar 200) - Valores: doc, ted, pix
 - `transfered` (boolean)
-- `transaction_id` (varchar 100, indexed)
+- `transaction_id` (varchar 100, indexed, unique)
 - `fee` (decimal 10,2)
 - `exchange_rate` (decimal 10,6)
 - `processed_at` (timestamptz)
 - `confirmation_code` (varchar 50)
 - `notes` (text), `receipt` (varchar 100)
-- `origin_account_id`, `destiny_account_id` (FK → accounts_account.id)
+- `origin_account_id` (FK → accounts_account.id, related_name="Credora")
+- `destiny_account_id` (FK → accounts_account.id, related_name="Beneficiada")
 - `created_by_id`, `updated_by_id` (FK → auth_user.id)
 - `member_id` (FK → members_member.id)
 

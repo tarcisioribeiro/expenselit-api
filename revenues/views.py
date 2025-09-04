@@ -8,11 +8,11 @@ from app.permissions import GlobalDefaultPermission
 class RevenueCreateListView(generics.ListCreateAPIView):
     """
     ViewSet para listar e criar receitas.
-    
+
     Permite:
     - GET: Lista todas as receitas ordenadas por data decrescente
     - POST: Cria uma nova receita
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -33,12 +33,12 @@ class RevenueCreateListView(generics.ListCreateAPIView):
 class RevenueRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """
     ViewSet para operações individuais em receitas.
-    
+
     Permite:
     - GET: Recupera uma receita específica
     - PUT/PATCH: Atualiza uma receita existente
     - DELETE: Remove uma receita
-    
+
     Attributes
     ----------
     permission_classes : tuple

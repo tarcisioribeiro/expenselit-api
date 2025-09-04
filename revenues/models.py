@@ -121,9 +121,9 @@ class Revenue(BaseModel):
     def save(self, *args, **kwargs):
         """
         Override para calcular automaticamente o valor líquido.
-        
+
         Calcula o net_amount como value - tax_amount se não foi fornecido.
-        
+
         Parameters
         ----------
         *args

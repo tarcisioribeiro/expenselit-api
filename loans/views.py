@@ -8,11 +8,11 @@ from app.permissions import GlobalDefaultPermission
 class LoanCreateListView(generics.ListCreateAPIView):
     """
     ViewSet para listar e criar empréstimos.
-    
+
     Permite:
     - GET: Lista todos os empréstimos
     - POST: Cria um novo empréstimo
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -30,12 +30,12 @@ class LoanCreateListView(generics.ListCreateAPIView):
 class LoanRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """
     ViewSet para operações individuais em empréstimos.
-    
+
     Permite:
     - GET: Recupera um empréstimo específico
     - PUT/PATCH: Atualiza um empréstimo existente
     - DELETE: Remove um empréstimo
-    
+
     Attributes
     ----------
     permission_classes : tuple

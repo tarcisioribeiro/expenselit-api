@@ -17,7 +17,6 @@ def health_check(request):
         'version': '1.0.0',
         'checks': {}
     }
-    
     # Database connectivity check
     try:
         db_conn = connections['default']
@@ -34,10 +33,10 @@ def health_check(request):
             'message': f'Database connection failed: {str(e)}'
         }
         health['status'] = 'unhealthy'
-    
     # Cache check (if Redis is configured)
     try:
-        if hasattr(settings, 'CACHES') and settings.CACHES.get('default', {}).get('BACKEND'):
+        if (hasattr(settings, 'CACHES') and
+                settings.CACHES.get('default', {}).get('BACKEND')):
             cache.set('health_check_key', 'test_value', 30)
             cached_value = cache.get('health_check_key')
             if cached_value == 'test_value':
@@ -60,19 +59,17 @@ def health_check(request):
             'status': 'unhealthy',
             'message': f'Cache error: {str(e)}'
         }
-    
     # Environment variables check
     required_env_vars = ['SECRET_KEY', 'ENCRYPTION_KEY', 'DB_NAME', 'DB_USER']
     missing_vars = []
-    
     for var in required_env_vars:
         if not os.getenv(var):
             missing_vars.append(var)
-    
     if missing_vars:
         health['checks']['environment'] = {
             'status': 'unhealthy',
-            'message': f'Missing environment variables: {", ".join(missing_vars)}'
+            'message': (f'Missing environment variables: '
+                        f'{", ".join(missing_vars)}')
         }
         health['status'] = 'unhealthy'
     else:
@@ -80,13 +77,11 @@ def health_check(request):
             'status': 'healthy',
             'message': 'All required environment variables are set'
         }
-    
     # Disk space check (optional)
     try:
         import shutil
         total, used, free = shutil.disk_usage('/')
         free_percentage = (free / total) * 100
-        
         if free_percentage < 10:  # Less than 10% free space
             health['checks']['disk_space'] = {
                 'status': 'warning',
@@ -102,19 +97,15 @@ def health_check(request):
             'status': 'unknown',
             'message': f'Could not check disk space: {str(e)}'
         }
-    
     # Determine overall status
     unhealthy_checks = [
-        check for check in health['checks'].values() 
+        check for check in health['checks'].values()
         if check['status'] == 'unhealthy'
     ]
-    
     if unhealthy_checks:
         health['status'] = 'unhealthy'
-    
     # Return appropriate HTTP status code
     status_code = 200 if health['status'] == 'healthy' else 503
-    
     return JsonResponse(health, status=status_code)
 
 
@@ -128,11 +119,11 @@ def ready_check(request):
         db_conn = connections['default']
         with db_conn.cursor() as cursor:
             cursor.execute("SELECT 1")
-        
-        return JsonResponse({
-            'status': 'ready',
-            'timestamp': now().isoformat()
-        })
+            return JsonResponse({
+                'status': 'ready',
+                'timestamp': now().isoformat()
+            }
+            )
     except Exception as e:
         return JsonResponse({
             'status': 'not_ready',

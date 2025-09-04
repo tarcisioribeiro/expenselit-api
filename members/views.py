@@ -8,11 +8,11 @@ from app.permissions import GlobalDefaultPermission
 class MemberCreateListView(generics.ListCreateAPIView):
     """
     ViewSet para listar e criar membros.
-    
+
     Permite:
     - GET: Lista todos os membros
     - POST: Cria um novo membro
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -30,12 +30,12 @@ class MemberCreateListView(generics.ListCreateAPIView):
 class MemberRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """
     ViewSet para operações individuais em membros.
-    
+
     Permite:
     - GET: Recupera um membro específico
     - PUT/PATCH: Atualiza um membro existente
     - DELETE: Remove um membro
-    
+
     Attributes
     ----------
     permission_classes : tuple

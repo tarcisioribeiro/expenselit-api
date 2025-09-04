@@ -2,7 +2,10 @@ from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenObtainPairView, TokenRefreshView, TokenVerifyView
 )
-from .views import LogoutView, get_user_permissions, get_available_users, create_user_with_member
+from .views import (
+    LogoutView, get_user_permissions, get_available_users,
+    create_user_with_member
+)
 
 
 urlpatterns = [

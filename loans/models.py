@@ -2,7 +2,11 @@ from django.db import models
 from accounts.models import Account
 from expenses.models import EXPENSES_CATEGORIES
 from members.models import Member
-from app.models import BaseModel, PAYMENT_FREQUENCY_CHOICES, LOAN_STATUS_CHOICES
+from app.models import (
+    BaseModel,
+    PAYMENT_FREQUENCY_CHOICES,
+    LOAN_STATUS_CHOICES
+)
 
 
 class Loan(BaseModel):

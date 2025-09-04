@@ -10,11 +10,11 @@ from app.permissions import GlobalDefaultPermission
 class ExpenseCreateListView(generics.ListCreateAPIView):
     """
     ViewSet para listar e criar despesas.
-    
+
     Permite:
     - GET: Lista todas as despesas ordenadas por data decrescente
     - POST: Cria uma nova despesa
-    
+
     Attributes
     ----------
     permission_classes : tuple
@@ -41,12 +41,12 @@ class ExpenseCreateListView(generics.ListCreateAPIView):
 class ExpenseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """
     ViewSet para operações individuais em despesas.
-    
+
     Permite:
     - GET: Recupera uma despesa específica
     - PUT/PATCH: Atualiza uma despesa existente
     - DELETE: Remove uma despesa
-    
+
     Attributes
     ----------
     permission_classes : tuple

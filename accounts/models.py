@@ -20,13 +20,21 @@ ACCOUNT_NAMES = (
 
 
 class Account(BaseModel):
-    name = models.CharField(
+    account_name = models.CharField(
+        max_length=200,
+        null=False,
+        blank=False,
+        default="Conta",
+        verbose_name="Nome da conta"
+    )
+    institution_name = models.CharField(
         max_length=200,
         choices=ACCOUNT_NAMES,
         null=False,
         blank=False,
         unique=True,
-        verbose_name="Nome"
+        default="CEF",
+        verbose_name="Insitution"
     )
     account_type = models.CharField(
         max_length=100,
@@ -65,13 +73,13 @@ class Account(BaseModel):
         verbose_name="Saldo Atual",
         max_digits=15,
         decimal_places=2,
-        default=0.00
+        default=0.00  # type: ignore
     )
     minimum_balance = models.DecimalField(
         verbose_name="Saldo Mínimo",
         max_digits=15,
         decimal_places=2,
-        default=0.00
+        default=0.00  # type: ignore
     )
     opening_date = models.DateField(
         verbose_name="Data de Abertura",
@@ -92,7 +100,7 @@ class Account(BaseModel):
     )
 
     class Meta:
-        ordering = ['-name']
+        ordering = ['-account_name']
         verbose_name = "Conta"
         verbose_name_plural = "Contas"
 
@@ -100,7 +108,7 @@ class Account(BaseModel):
     def account_number(self):
         """
         Propriedade para descriptografar o número da conta.
-        
+
         Returns
         -------
         str or None
@@ -109,7 +117,29 @@ class Account(BaseModel):
         if self._account_number:
             try:
                 return FieldEncryption.decrypt_data(self._account_number)
-            except:
+            except Exception:
+                return None
+        return None
+
+    @property
+    def account_number_masked(self):
+        """
+        Propriedade para retornar o número da conta mascarado.
+
+        Returns
+        -------
+        str or None
+            Número da conta mascarado (****1234) ou None se não existir.
+        """
+        if self._account_number:
+            try:
+                full_number = FieldEncryption.decrypt_data(
+                    self._account_number
+                )
+                if full_number and len(full_number) >= 4:
+                    return '*' * (len(full_number) - 4) + full_number[-4:]
+                return full_number
+            except Exception:
                 return None
         return None
 
@@ -117,7 +147,7 @@ class Account(BaseModel):
     def account_number(self, value):
         """
         Setter para criptografar o número da conta.
-        
+
         Parameters
         ----------
         value : str or None

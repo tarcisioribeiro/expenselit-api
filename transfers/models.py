@@ -6,7 +6,7 @@ from app.models import BaseModel
 TRANSFER_CATEGORIES = (
     ('doc', 'DOC'),
     ('ted', 'TED'),
-    ('pix', 'Pix'),
+    ('pix', 'PIX'),
 )
 
 
